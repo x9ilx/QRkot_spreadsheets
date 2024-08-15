@@ -9,7 +9,6 @@ from app.models.user import User
 from app.schemas.donation import (DonationCreate, DonationDB,
                                   DonationDBForSuperuser)
 
-
 router = APIRouter()
 
 
@@ -18,9 +17,9 @@ router = APIRouter()
     response_model=DonationDB,
 )
 async def create_new_donation(
-    donation: DonationCreate,
-    session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_user),
+        donation: DonationCreate,
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_user),
 ) -> Donation:
     return await donation_crud.apply_donation(
         db_obj=await donation_crud.create(donation, user, session),
@@ -33,8 +32,8 @@ async def create_new_donation(
     response_model=list[DonationDB],
 )
 async def get_user_donation(
-    session: AsyncSession = Depends(get_async_session),
-    user: User = Depends(current_user),
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(current_user),
 ) -> Donation:
     return await donation_crud.get_user_donation(session, user)
 
@@ -46,6 +45,6 @@ async def get_user_donation(
     dependencies=[Depends(current_superuser)],
 )
 async def get_all_donations(
-    session: AsyncSession = Depends(get_async_session),
+        session: AsyncSession = Depends(get_async_session),
 ):
     return await donation_crud.get_all(session=session)
