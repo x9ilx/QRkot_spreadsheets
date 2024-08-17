@@ -71,18 +71,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     async def delete(
-        self,
-        db_obj: ModelType,
-        session: AsyncSession
+        self, db_obj: ModelType, session: AsyncSession
     ) -> ModelType:
         await session.delete(db_obj)
         await session.commit()
         return db_obj
 
     async def apply_donation(
-        self,
-        db_obj: ModelType,
-        session: AsyncSession
+        self, db_obj: ModelType, session: AsyncSession
     ) -> ModelType:
         db_obj = await donate_to_project(
             new_obj=db_obj,

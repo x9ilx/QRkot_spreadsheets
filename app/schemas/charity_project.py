@@ -1,9 +1,9 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 from app.schemas.mixins import DonationMixinSchema
-
 
 NAME_MIN_LENGHT = 1
 NAME_MAX_LENGTH = 100

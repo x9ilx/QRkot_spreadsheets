@@ -23,6 +23,6 @@ def test_google_cred():
         'email',
     ]
     for cred in need_cred:
-        assert hasattr(settings, cred), (
-            f'В объекте `app.core.config.Settings` нет атрибута `{cred}`'
-        )
+        assert hasattr(
+            settings, cred
+        ), f'В объекте `app.core.config.Settings` нет атрибута `{cred}`'
