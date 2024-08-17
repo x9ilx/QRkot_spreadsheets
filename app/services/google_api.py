@@ -69,7 +69,7 @@ async def spreadsheets_update_value(
         table_values.append(new_row)
 
     update_body = {'majorDimension': 'ROWS', 'values': table_values}
-    response = await wrapper_service.as_service_account(
+    await wrapper_service.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheet_id,
             range='A1:E30',
