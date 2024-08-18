@@ -20,8 +20,8 @@ class CRUDCharityProject(
         self, session: AsyncSession
     ) -> list[CharityProject]:
         project_closing_time = (
-            extract('epoch', CharityProject.close_date)
-            - extract('epoch', CharityProject.create_date)
+            extract('epoch', CharityProject.close_date) -
+            extract('epoch', CharityProject.create_date)
         ).label('project_closing_time')
         charity_projects = await session.execute(
             select(
