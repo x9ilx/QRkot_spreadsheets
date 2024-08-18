@@ -2,12 +2,12 @@ from typing import Generic, Optional, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import Base
 from app.models.user import User
-from app.services.donation import donate_to_project
+
 
 ModelType = TypeVar('ModelType', bound=Base)
 CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
@@ -77,13 +77,22 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await session.commit()
         return db_obj
 
-    async def apply_donation(
-        self, db_obj: ModelType, session: AsyncSession
-    ) -> ModelType:
-        db_obj = await donate_to_project(
-            new_obj=db_obj,
-            session=session,
+    async def get_first_not_fully_invested(
+            self,
+            session: AsyncSession
+    ) -> Optional[ModelType]:
+        objects = await session.execute(
+            select(self.model)
+            .where(self.model.fully_invested == false())
+            .order_by(self.model.create_date)
         )
+        return objects.scalars().first()
+
+    async def accept_all_changes(
+            self,
+            obj: ModelType,
+            session: AsyncSession
+    ) -> ModelType:
         await session.commit()
-        await session.refresh(db_obj)
-        return db_obj
+        await session.refresh(obj)
+        return obj

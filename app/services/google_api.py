@@ -4,7 +4,11 @@ from aiogoogle import Aiogoogle
 
 from app.core.config import settings
 
+
 FORMAT = '%Y/%m/%d %H:%M:%S'
+SHEET_RANGE = 'A1:E30'
+SHEET_ROW_COUNT = 100
+SHEET_COLUMN_COUNT = 11
 
 
 async def create_spreadsheet(wrapper_service: Aiogoogle) -> str:
@@ -21,7 +25,7 @@ async def create_spreadsheet(wrapper_service: Aiogoogle) -> str:
                     'sheetType': 'GRID',
                     'sheetId': 0,
                     'title': 'Лист1',
-                    'gridProperties': {'rowCount': 100, 'columnCount': 11},
+                    'gridProperties': {'rowCount': SHEET_ROW_COUNT, 'columnCount': SHEET_COLUMN_COUNT},
                 }
             }
         ],
@@ -29,8 +33,7 @@ async def create_spreadsheet(wrapper_service: Aiogoogle) -> str:
     response = await wrapper_service.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
     )
-    spreadsheet_id = response['spreadsheetId']
-    return spreadsheet_id
+    return response['spreadsheetId']
 
 
 async def set_user_permissions(
@@ -72,7 +75,7 @@ async def spreadsheets_update_value(
     await wrapper_service.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheet_id,
-            range='A1:E30',
+            range=SHEET_RANGE,
             valueInputOption='USER_ENTERED',
             json=update_body,
         )

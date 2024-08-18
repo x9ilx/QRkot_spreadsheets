@@ -18,6 +18,7 @@ from app.schemas.charity_project import (
     CharityProjectUpdate,
 )
 from app.services.base import close_donation_or_project
+from app.services.donation import donate_to_project
 
 router = APIRouter()
 
@@ -34,8 +35,8 @@ async def create_new_charity_project(
     await check_charity_project_name_duplicate(
         project_name=charity_project.name, session=session
     )
-    return await charity_project_crud.apply_donation(
-        db_obj=await charity_project_crud.create(
+    return await donate_to_project(
+        new_obj=await charity_project_crud.create(
             obj_in=charity_project,
             session=session,
             user=None,

@@ -1,7 +1,7 @@
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.expression import false
 
+from app.crud.charity_project import charity_project_crud
+from app.crud.donation import donation_crud
 from app.models.charity_project import CharityProject
 from app.models.donation import Donation
 from app.models.mixins import DonationMixIn
@@ -12,19 +12,17 @@ async def donate_to_project(
     new_obj: DonationMixIn,
     session: AsyncSession,
 ):
-    apply_object_type = (
-        CharityProject if type(new_obj) == Donation else Donation
-    )
+    if type(new_obj) == Donation:
+        crud_apply_object, crud_new_obj = charity_project_crud, donation_crud
+    else:
+        crud_apply_object, crud_new_obj = donation_crud, charity_project_crud
     while not new_obj.fully_invested:
-        apply_object = await session.execute(
-            select(apply_object_type)
-            .where(apply_object_type.fully_invested == false())
-            .order_by(apply_object_type.create_date)
+        apply_object = await crud_apply_object.get_first_not_fully_invested(
+            session
         )
-        apply_object = apply_object.scalars().first()
         if apply_object is None:
             break
-        if apply_object_type is CharityProject:
+        if apply_object is CharityProject:
             charity_project, donation = apply_object, new_obj
         else:
             charity_project, donation = new_obj, apply_object
@@ -40,7 +38,7 @@ async def donate_to_project(
         donation.invested_amount += add_sum
         charity_project.invested_amount += add_sum
         if donation.full_amount == donation.invested_amount:
-            donation = close_donation_or_project(donation)
+            close_donation_or_project(donation)
         if charity_project.full_amount == charity_project.invested_amount:
-            charity_project = close_donation_or_project(charity_project)
-    return new_obj
+            close_donation_or_project(charity_project)
+    return await crud_new_obj.accept_all_changes(new_obj, session)
