@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import Base
 from app.models.user import User
 
-
 ModelType = TypeVar('ModelType', bound=Base)
 CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
 UpdateSchemaType = TypeVar('UpdateSchemaType', bound=BaseModel)
@@ -78,8 +77,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     async def get_first_not_fully_invested(
-            self,
-            session: AsyncSession
+        self, session: AsyncSession
     ) -> Optional[ModelType]:
         objects = await session.execute(
             select(self.model)
@@ -89,9 +87,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return objects.scalars().first()
 
     async def accept_all_changes(
-            self,
-            obj: ModelType,
-            session: AsyncSession
+        self, obj: ModelType, session: AsyncSession
     ) -> ModelType:
         await session.commit()
         await session.refresh(obj)

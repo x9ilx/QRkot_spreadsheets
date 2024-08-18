@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-
 MINUTES_PER_HOUR = 60
 SECONDS_PER_HOUR = 3600
 

@@ -4,7 +4,6 @@ from aiogoogle import Aiogoogle
 
 from app.core.config import settings
 
-
 FORMAT = '%Y/%m/%d %H:%M:%S'
 SHEET_RANGE = 'A1:E30'
 SHEET_ROW_COUNT = 100
@@ -25,7 +24,10 @@ async def create_spreadsheet(wrapper_service: Aiogoogle) -> str:
                     'sheetType': 'GRID',
                     'sheetId': 0,
                     'title': 'Лист1',
-                    'gridProperties': {'rowCount': SHEET_ROW_COUNT, 'columnCount': SHEET_COLUMN_COUNT},
+                    'gridProperties': {
+                        'rowCount': SHEET_ROW_COUNT,
+                        'columnCount': SHEET_COLUMN_COUNT,
+                    },
                 }
             }
         ],
