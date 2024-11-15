@@ -1,4 +1,4 @@
-# Проект QRKot
+# Проект Сharitable Foundation
 
 ## Описание проекта
 
